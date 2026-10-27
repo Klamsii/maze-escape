@@ -96,7 +96,42 @@ The recursive methods in the test oracle are used only on graphs of at most nine
 
 ## Timing and complexity (Mission 7)
 
-The measured results and complexity table are added in the Mission 7 commit.
+Measured with the unchanged `Bench` class on 27 October 2026, using Temurin OpenJDK 25.0.4.1 on Windows and an AMD Ryzen 5 6600H. The source code was also compiled with `--release 17`; the installed JVM used for execution and timing was Java 25.
+
+```sh
+java -cp out Bench
+```
+
+Milliseconds, five runs per maze. Values and averages are copied as rounded by `Bench` (each is rounded independently).
+
+| Maze | Kruskal: five runs, ms | Kruskal average, ms | Prim: five runs, ms | Prim average, ms |
+|---|---|---:|---|---:|
+| 100 x 100 | 47, 20, 18, 39, 36 | 32 | 37, 35, 31, 9, 10 | 24 |
+| 300 x 300 | 262, 397, 413, 136, 176 | 277 | 215, 184, 227, 106, 130 | 173 |
+| 1000 x 1000 | 2172, 2111, 2031, 2047, 1932 | 2059 | 2015, 2031, 1843, 1984, 1974 | 1969 |
+
+Increasing the side length increases the number of cells quadratically, so the time grows substantially as both algorithms handle many more edges. On a rectangular grid m is approximately 2n, giving both implementations an O(n log n) upper bound; Prim was faster in these measurements, with a small difference at 1000 x 1000. Five runs without explicit JVM warm-up include compilation and garbage-collection effects, so the measured ratios need not follow the asymptotic formula exactly.
+
+The original timing output is in [output/bench.txt](output/bench.txt).
+
+### Complexity
+
+Here n is the number of cells, m is the number of input walls or slides, b is the number of broken walls, k is the number of zones and q is the number of distinct directed edges between zones. Space means auxiliary storage unless stated otherwise.
+
+| Algorithm | Time | Space | Assumptions |
+|---|---|---|---|
+| DSU construction | O(n) | O(n) retained storage | Parent and size arrays |
+| DSU find, union, connected | O(alpha(n)) amortized | O(1) per operation | Union by size and iterative path compression; DSU storage is O(n) |
+| DSU count | O(1) | O(1) | Maintained component counter |
+| Input-order maze construction | O(n + m alpha(n)) | O(n) | Connected rectangular grid; returns n-1 broken walls |
+| Kruskal | O(n + m log m) | O(n + m) | Sorts wall indexes, then uses the DSU |
+| Prim | O(n + m log n) | O(n + m) | Simple connected grid; standard priority queue can retain obsolete entries |
+| Escape DFS | O(n + b) | O(n + b) | Grid degree is at most four; b = n-1 for a maze tree |
+| Kosaraju | O(n + m) | O(n + m) | Two iterative DFS passes and forward/reverse adjacency lists |
+| Build zone graph and compute routes | O(m + k) | O(m + k) | Given topological zone labels; array markers merge parallel edges |
+| DP pass on the built zone graph | O(k + q) | O(k) extra | In addition to the stored graph; no priority queue |
+
+The verification logs are in [output/checks.txt](output/checks.txt), [output/dsu-checks.txt](output/dsu-checks.txt) and [output/algorithm-checks.txt](output/algorithm-checks.txt). A saved personal run is in [output/program.txt](output/program.txt).
 
 ## Git and submission
 

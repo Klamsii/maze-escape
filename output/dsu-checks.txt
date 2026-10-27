@@ -1,0 +1,21 @@
+ok    6 sets at the start
+ok    0 and 1 are apart at the start
+ok    union(0, 1) joins two sets
+ok    0 and 1 are together
+ok    union(1, 0) again returns false
+ok    5 sets after one union
+ok    0 and 2 are together through 1 and 3
+ok    3 sets: {0,1,2,3} {4} {5}
+ok    a single cell is its own root
+ok    union of a singleton with itself changes nothing
+ok    union of a larger set with itself changes nothing
+ok    self unions preserve the count
+ok    a singleton can be joined to a larger set
+ok    joining a singleton reduces the count once
+ok    a million-cell chain joins every new cell
+ok    one set after a million-cell chain
+ok    all chain cells have the same root without recursion
+ok    closing an existing chain does not reduce the count
+ok    an empty DSU has zero sets
+ok    one-cell DSU remains one set
+All checks passed.

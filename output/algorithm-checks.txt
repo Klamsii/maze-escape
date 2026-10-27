@@ -1,0 +1,2 @@
+Small-instance checks passed: 17464
+Million-cell DFS and SCC/DAG checks passed.
