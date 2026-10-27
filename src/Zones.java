@@ -80,7 +80,60 @@ public class Zones {
      * [1] the cost of the cheapest route from the zone of cell 0 to the zone of the last cell.
      */
     public static long[] routes(Input.Slides s, int[] zoneOf, int zoneCount) {
-        // TODO
-        return new long[]{0, 0};
+        if (s.n() == 0) return new long[]{0, 0};
+        // Group the cross-zone slides by their source zone using array-based lists.
+        int[] head = new int[zoneCount];
+        Arrays.fill(head, -1);
+        int[] next = new int[s.count()];
+        for (int edge = 0; edge < s.count(); edge++) {
+            int a = zoneOf[s.from()[edge]], b = zoneOf[s.to()[edge]];
+            if (a == b) continue;
+            if (a > b) throw new IllegalArgumentException("Zone numbers are not topological");
+            next[edge] = head[a];
+            head[a] = edge;
+        }
+
+        // Build compact zone adjacency lists. One edge per pair, with the minimum time.
+        int[] begin = new int[zoneCount + 1];
+        int[] to = new int[s.count()];
+        int[] cost = new int[s.count()];
+        int[] lastSource = new int[zoneCount];
+        int[] position = new int[zoneCount];
+        Arrays.fill(lastSource, -1);
+        int edges = 0;
+        for (int a = 0; a < zoneCount; a++) {
+            begin[a] = edges;
+            for (int edge = head[a]; edge != -1; edge = next[edge]) {
+                int b = zoneOf[s.to()[edge]];
+                if (lastSource[b] != a) {
+                    lastSource[b] = a;
+                    position[b] = edges;
+                    to[edges] = b;
+                    cost[edges++] = s.time()[edge];
+                } else {
+                    int p = position[b];
+                    cost[p] = Math.min(cost[p], s.time()[edge]);
+                }
+            }
+        }
+        begin[zoneCount] = edges;
+
+        int[] stages = new int[zoneCount];
+        Arrays.fill(stages, 1); // A chain can start in any zone, even an unreachable one.
+        long[] distance = new long[zoneCount];
+        Arrays.fill(distance, Long.MAX_VALUE);
+        distance[zoneOf[0]] = 0;
+        int flowStages = 0;
+        for (int a = 0; a < zoneCount; a++) {
+            flowStages = Math.max(flowStages, stages[a]);
+            for (int edge = begin[a]; edge < begin[a + 1]; edge++) {
+                int b = to[edge];
+                stages[b] = Math.max(stages[b], stages[a] + 1);
+                if (distance[a] != Long.MAX_VALUE) {
+                    distance[b] = Math.min(distance[b], distance[a] + cost[edge]);
+                }
+            }
+        }
+        return new long[]{flowStages, distance[zoneOf[s.n() - 1]]};
     }
 }
