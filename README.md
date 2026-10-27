@@ -135,13 +135,15 @@ The verification logs are in [output/checks.txt](output/checks.txt), [output/dsu
 
 ## Git and submission
 
+Public repository: [AmirBro0/maze-escape](https://github.com/AmirBro0/maze-escape).
+
 The local repository is on `main`, with an initial starter commit and separate commits for the missions. These are actual commits made during this session, not a reconstruction of earlier student work. Inspect them with `git log --oneline`.
 
 - [x] Source code, personal data and maze picture are included.
 - [x] The program compiles and the supplied examples pass.
 - [x] The output, answers and accurate AI-use note are recorded.
 - [ ] The student has reviewed and adapted the code and explanations.
-- [ ] The repository has been published as a public GitHub repository with its commit history.
+- [x] The repository has been published as a public GitHub repository with its commit history.
 - [ ] The public repository link has been submitted in Moodle.
 
-The last three items require the student's action; they have not been marked as completed by the assistant. The setup and assignment remain available in `START_HERE.md` and `docs/Assignment3.pdf`.
+Student review and submission of the link in Moodle still require the student's action; they have not been marked as completed by the assistant. The setup and assignment remain available in `START_HERE.md` and `docs/Assignment3.pdf`.
