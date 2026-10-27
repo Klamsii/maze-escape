@@ -6,6 +6,8 @@
  * of the slides that enter cell v (reversed graph). The lists hold slide numbers i; the cell at the other end is s.to()[i]
  * or s.from()[i].
  */
+import java.util.Arrays;
+
 public class Zones {
 
     /**
@@ -19,8 +21,56 @@ public class Zones {
      * Is DAG in Main is 1 when the number of zones equals the number of cells (no cycle), so you do not need a separate check.
      */
     public static int[] kosaraju(Input.Slides s) {
-        // TODO
-        return new int[s.n()];
+        int n = s.n();
+        int[][] from = Graphs.slidesFrom(s);
+        int[][] into = Graphs.slidesInto(s);
+        boolean[] seen = new boolean[n];
+        int[] nextEdge = new int[n];
+        int[] stack = new int[n];
+        int[] finish = new int[n];
+        int finished = 0;
+        for (int start = 0; start < n; start++) {
+            if (seen[start]) continue;
+            int top = 0;
+            stack[0] = start;
+            seen[start] = true;
+            while (top >= 0) {
+                int u = stack[top];
+                if (nextEdge[u] < from[u].length) {
+                    int v = s.to()[from[u][nextEdge[u]++]];
+                    if (!seen[v]) {
+                        seen[v] = true;
+                        stack[++top] = v;
+                    }
+                } else {
+                    finish[finished++] = u;
+                    top--;
+                }
+            }
+        }
+
+        int[] zoneOf = new int[n];
+        Arrays.fill(zoneOf, -1);
+        int zones = 0;
+        for (int i = finished - 1; i >= 0; i--) {
+            int start = finish[i];
+            if (zoneOf[start] != -1) continue;
+            int size = 0;
+            stack[size++] = start;
+            zoneOf[start] = zones;
+            while (size > 0) {
+                int u = stack[--size];
+                for (int edge : into[u]) {
+                    int v = s.from()[edge];
+                    if (zoneOf[v] == -1) {
+                        zoneOf[v] = zones;
+                        stack[size++] = v;
+                    }
+                }
+            }
+            zones++;
+        }
+        return zoneOf;
     }
 
     /**
