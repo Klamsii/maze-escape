@@ -6,6 +6,8 @@
  * to visit them in the required order, go through the four cells above one by one and take those that are in the list.
  * The program must not overflow the stack on a maze of 1000 by 1000 cells.
  */
+import java.util.Arrays;
+
 public class Escape {
 
     /**
@@ -16,7 +18,42 @@ public class Escape {
     public record Result(int[] path, int visited, int deadEnds) {}
 
     public static Result escape(Input.Walls w, int[] broken) {
-        // TODO
-        return new Result(new int[0], 0, 0);
+        int n = w.cells();
+        if (n == 0) return new Result(new int[0], 0, 0);
+        int[][] open = Graphs.open(w, broken);
+        int deadEnds = 0;
+        for (int[] neighbours : open) if (neighbours.length == 1) deadEnds++;
+
+        boolean[] seen = new boolean[n];
+        int[] stack = new int[n];
+        byte[] nextDirection = new byte[n];
+        int top = 0, visited = 1;
+        stack[0] = 0;
+        seen[0] = true;
+        // Each stack frame remembers its next direction, exactly as recursive DFS would.
+        while (top >= 0) {
+            int u = stack[top];
+            if (u == n - 1) return new Result(Arrays.copyOf(stack, top + 1), visited, deadEnds);
+            if (nextDirection[top] == 4) {
+                top--;
+                continue;
+            }
+            int direction = nextDirection[top]++;
+            int v = switch (direction) {
+                case 0 -> u >= w.cols() ? u - w.cols() : -1;
+                case 1 -> u % w.cols() + 1 < w.cols() ? u + 1 : -1;
+                case 2 -> u + w.cols() < n ? u + w.cols() : -1;
+                default -> u % w.cols() > 0 ? u - 1 : -1;
+            };
+            if (v < 0 || seen[v]) continue;
+            boolean door = false;
+            for (int neighbour : open[u]) if (neighbour == v) door = true;
+            if (!door) continue;
+            seen[v] = true;
+            visited++;
+            stack[++top] = v;
+            nextDirection[top] = 0;
+        }
+        return new Result(new int[0], visited, deadEnds);
     }
 }
