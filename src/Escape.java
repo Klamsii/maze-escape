@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Mission 3. Escape: DFS from cell 0 to the last cell (rows * cols - 1) in the maze of Mission 1.
  * Two neighbouring cells are connected when the wall between them is broken.
@@ -6,8 +8,6 @@
  * to visit them in the required order, go through the four cells above one by one and take those that are in the list.
  * The program must not overflow the stack on a maze of 1000 by 1000 cells.
  */
-import java.util.Arrays;
-
 public class Escape {
 
     /**

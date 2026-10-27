@@ -1,12 +1,12 @@
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 /**
  * Missions 1 and 2. Building the maze out of the walls.
  * A wall k joins the cells w.a()[k] and w.b()[k] and costs w.cost()[k]. Indexes start from 0,
  * the line number in walls.txt is the index + 1. The cells are connected by DisjointSet.
  */
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-
 public class Maze {
 
     /**

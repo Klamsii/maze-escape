@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Missions 4 and 5. The slides: a directed graph. Cells are 0 .. n-1, slide i goes from s.from()[i] to s.to()[i]
  * and takes s.time()[i]. There are no slides from a cell to itself, and the exit can always be reached from the start.
@@ -6,8 +8,6 @@
  * of the slides that enter cell v (reversed graph). The lists hold slide numbers i; the cell at the other end is s.to()[i]
  * or s.from()[i].
  */
-import java.util.Arrays;
-
 public class Zones {
 
     /**
